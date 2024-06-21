@@ -37,7 +37,7 @@ export default function App() {
           </ScrollArea>
         </div>
       </div>
-      <Markdown remarkPlugins={[remarkGfm]}>{blog}</Markdown>
+      <div>{blog}</div>
     </div>
   );
 }
