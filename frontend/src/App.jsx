@@ -4,11 +4,10 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { useState } from "react";
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import rehypeRaw from "rehype-raw";
 
 export default function App() {
   const [blog, setBlog] = useState("");
-
-  console.log(blog);
 
   return (
     <div>
@@ -17,6 +16,7 @@ export default function App() {
           <Label htmlFor="content">Write your content here</Label>
           <ScrollArea className="col-span-1">
             <Textarea
+              value={blog}
               name="content"
               id="content"
               placeholder="Write your content here"
@@ -33,11 +33,16 @@ export default function App() {
             name="preview"
             id="preview"
           >
-            <Markdown remarkPlugins={[remarkGfm]}>{blog}</Markdown>
+            <Markdown
+              className="prose"
+              remarkPlugins={[remarkGfm]}
+              rehypePlugins={[rehypeRaw]}
+            >
+              {blog}
+            </Markdown>
           </ScrollArea>
         </div>
       </div>
-      <div>{blog}</div>
     </div>
   );
 }
