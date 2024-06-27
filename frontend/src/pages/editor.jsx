@@ -1,13 +1,26 @@
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { useState } from "react";
-import Markdown from "react-markdown";
+import { useEffect, useState } from "react";
 import remarkGfm from "remark-gfm";
-import rehypeRaw from "rehype-raw";
+import { evaluate } from "@mdx-js/mdx";
+import * as runtime from "react/jsx-runtime";
 
 export default function Editor() {
   const [blog, setBlog] = useState("");
+  const [FinalMdx, setFinalMdx] = useState("");
+
+  async function test() {
+    const resultMdx = await evaluate(blog, {
+      ...runtime,
+      remarkPlugins: [remarkGfm],
+    });
+    setFinalMdx(resultMdx.default);
+  }
+
+  useEffect(() => {
+    test();
+  }, [blog]);
 
   return (
     <div>
@@ -26,20 +39,14 @@ export default function Editor() {
           </ScrollArea>
         </div>
 
-        <div>
+        <div className="prose">
           <Label htmlFor="preview">View live preview here</Label>
           <ScrollArea
             className="rounded-md border col-span-1 p-10 h-[calc(100vh-5rem)]"
             name="preview"
             id="preview"
           >
-            <Markdown
-              className="prose"
-              remarkPlugins={[remarkGfm]}
-              rehypePlugins={[rehypeRaw]}
-            >
-              {blog}
-            </Markdown>
+            {FinalMdx}
           </ScrollArea>
         </div>
       </div>
